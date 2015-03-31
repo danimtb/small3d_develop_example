@@ -42,6 +42,7 @@ public:
 	float get_DiveDistance();
 	void set_FlightHeight(float fh);
 	float get_FlightHeight();
+	void render(shared_ptr<small3d::Renderer> &r);
 
 	Bug();
 	~Bug();
@@ -69,6 +70,11 @@ Bug::~Bug()
 shared_ptr<small3d::SceneObject> Bug::Object()
 {
 	return BugObject;
+}
+
+void Bug::render(shared_ptr<small3d::Renderer> &r)
+{
+	r->renderSceneObject(BugObject);
 }
 
 void Bug::move()
@@ -106,7 +112,7 @@ void Bug::move()
 		{
 			//COLISION#####################################################################
 			//sound->play("bah");
-			//seconds = (SDL_GetTicks() - startTicks) / 1000;
+			//seconds = (SDL_GetTicks() - startTicks) / 1000;		
 		}
 			
 		if(bugFramesInCurrentState > DiveDuration / 2)

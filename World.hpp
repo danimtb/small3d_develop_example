@@ -65,7 +65,7 @@ void World::initGame()
 
 void World::move()
 {
-
+    bug.move();
 }
 
 void World::render(shared_ptr<small3d::Renderer> &rend)
@@ -91,6 +91,12 @@ void World::render(shared_ptr<small3d::Renderer> &rend)
       };
 
     rend->renderImage(&groundVerts[0], "ground", true, glm::vec3(0.0f, 0.0f, 0.0f));
+
+    bug.render(rend);
+
+    //CAMERA POSITION
+    shared_ptr<glm::vec3> cameraPos = shared_ptr<glm::vec3>(new glm::vec3(0, 1, 2));
+    rend->cameraPosition = *cameraPos;
 }
 
 void World::keyboard(KeyInput k)
