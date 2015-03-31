@@ -48,6 +48,8 @@ Coordinator::Coordinator(void)
 	unique_ptr<Image> startScreenTexture( new Image("Dani_MTB/small3d_develop_example/resources/images/startScreen.png") );
 	renderer->generateTexture("startScreen", startScreenTexture->getData(), startScreenTexture->getWidth(), startScreenTexture->getHeight());
 
+	world.loadScene(renderer);
+
 	startTicks = 0;
     seconds = 0;
 
@@ -113,7 +115,7 @@ void Coordinator::render()
 	}
 	else
 	{
-		world.render();
+		world.render(renderer);
 	}
 	
 	//Don`t remove this line. This line must be always at the end.
