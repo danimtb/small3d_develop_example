@@ -17,7 +17,6 @@
 #include <dimitrikourk/small3d/Exception.hpp>
 #include <memory>
 
-#include "GameLogic.hpp"
 #include "KeyInput.hpp"
 #include "Coordinator.hpp"
 
@@ -69,11 +68,11 @@ int main(int argc, char** argv)
 	  freopen("CONOUT$", "w", stdout);
 	#endif
 
-	  Coordinator coordinatorBii;
+	  //Coordinator coordinatorBii;
 
 	  try
 	  {
-		  shared_ptr<GameLogic> gameLogic(new GameLogic());
+		  shared_ptr<Coordinator> coordinatorBii(new Coordinator());
 		  
 		  // program main loop
 		  bool done = false;
@@ -85,15 +84,15 @@ int main(int argc, char** argv)
 		  
 		  while (!done)
 		  {
-			  coordinatorBii.keyboard(OnKeyboardDown(done));
+			  coordinatorBii->keyboard(OnKeyboardDown(done));
 			  
 			  ticks = SDL_GetTicks();
 	  
 			  if (ticks - prevTicks > ticksInterval)
 			  {
-				  coordinatorBii.process();
+				  coordinatorBii->process();
 				  //gameLogic->process(input,level);
-				  coordinatorBii.render();
+				  coordinatorBii->render();
 				  //gameLogic->render();
 				  prevTicks = ticks;
 			  }

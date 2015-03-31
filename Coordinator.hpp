@@ -1,4 +1,12 @@
 #include "KeyInput.hpp"
+#include <dimitrikourk/small3d/Logger.hpp>
+#include <dimitrikourk/small3d/SceneObject.hpp>
+#include <dimitrikourk/small3d/Renderer.hpp>
+#include <dimitrikourk/small3d/Text.hpp>
+#include <dimitrikourk/small3d/Sound.hpp>
+#include <dimitrikourk/small3d/MathFunctions.hpp>
+#include "World.hpp"
+
 
 class Coordinator
 {
@@ -9,31 +17,40 @@ public:
     void move();
     void render();
     void init();
-	shared_ptr<Renderer> renderer;
-	shared_ptr<Text> crusoeText48;
+    void process();
+	shared_ptr<small3d::Renderer> renderer;
+	shared_ptr<small3d::Text> crusoeText48;
 
     World world;
 
 private:
 	enum GameState {START_SCREEN, PLAYING};
 	GameState gameState;
+	int seconds;
 };
+
+using namespace small3d;
 
 Coordinator::Coordinator(void)
 {
-	GameState=START_SCREEN;
+	gameState=START_SCREEN;
 }
 
-virtual Coordinador::~Coordinator(void)
+Coordinator::~Coordinator(void)
 {
 }
 
-void Coordinador::keyboard(KeyInput k)
+void Coordinator::process()
 {
-	if(GameState==START_SCREEN)
+	
+}
+
+void Coordinator::keyboard(KeyInput k)
+{
+	if(gameState==START_SCREEN)
 	{
 		if(k.enter)
-			GameState=PLAYING;
+			gameState=PLAYING;
 	}
 	else
 	{
@@ -42,7 +59,7 @@ void Coordinador::keyboard(KeyInput k)
 
 }
 
-void Coordinador::init()
+void Coordinator::init()
 {
 }
 

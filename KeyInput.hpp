@@ -21,6 +21,5 @@ typedef struct KeyInput
     }
 
   } KeyInput;
-}
 
 #endif
