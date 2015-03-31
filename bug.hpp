@@ -29,7 +29,7 @@ private:
 
 public:
 	shared_ptr<small3d::SceneObject> Object();
-	void move(shared_ptr<small3d::SceneObject> obj);
+	void move();
 	void set_RotationSpeed(float rs);
 	float get_RotationSpeed();
 	void set_DiveTilt(float dt);
@@ -50,7 +50,7 @@ public:
 
 Bug::Bug()
 {
-	BugObject = shared_ptr<small3d::SceneObject>(new small3d::SceneObject("bug", "jafroch/Small3dExample/resources/models/Bug/bugAnim",9));
+	BugObject = shared_ptr<small3d::SceneObject>(new small3d::SceneObject("bug", "Dani_MTB/small3d_develop_example/resources/models/Bug/bugAnim",9));
 	BugObject->setColour(0.8f, 0.7f, 0.04f, 1.0f);
 	BugObject->setFrameDelay(2);
 
@@ -71,13 +71,13 @@ shared_ptr<small3d::SceneObject> Bug::Object()
 	return BugObject;
 }
 
-void Bug::move(shared_ptr<small3d::SceneObject> obj)
+void Bug::move()
 {
 	shared_ptr<glm::vec3> bugRotation = BugObject->getRotation();
 	shared_ptr<glm::vec3> bugOffset = BugObject->getOffset();
 
-	float xDistance = BugObject->getOffset()->x - obj->getOffset()->x;
-	float zDistance = BugObject->getOffset()->z - obj->getOffset()->z;
+	float xDistance = BugObject->getOffset()->x;
+	float zDistance = BugObject->getOffset()->z;
 	float distance = ROUND_2_DECIMAL(sqrt(xDistance * xDistance + zDistance*zDistance));
 
 	float objRelX = ROUND_2_DECIMAL(xDistance / distance);
@@ -102,7 +102,7 @@ void Bug::move(shared_ptr<small3d::SceneObject> obj)
 
 	if(bugState == DIVING_DOWN)
 	{
-		if (obj->collidesWithPoint(BugObject->getOffset()->x, BugObject->getOffset()->y, BugObject->getOffset()->z))
+		if (true)//(BugObject->getOffset()->x, BugObject->getOffset()->y, BugObject->getOffset()->z)
 		{
 			//COLISION#####################################################################
 			//sound->play("bah");
@@ -116,7 +116,7 @@ void Bug::move(shared_ptr<small3d::SceneObject> obj)
 	}
 	else if (bugState == DIVING_UP)
 	{
-		if (obj->collidesWithPoint(BugObject->getOffset()->x, BugObject->getOffset()->y, BugObject->getOffset()->z))
+		if (true)//(BugObject->getOffset()->x, BugObject->getOffset()->y, BugObject->getOffset()->z)
 		{
 			//gameState = START_SCREEN;
 		}
@@ -245,10 +245,4 @@ void Bug::set_FlightHeight(float fh)
 float Bug::get_FlightHeight()
 {
 	return FlightHeight;
-}
-
-int main()
-{
-	Bug bicho;
-	bicho.set_Speed(8.0f);
 }

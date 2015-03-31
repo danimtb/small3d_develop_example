@@ -91,9 +91,7 @@ int main(int argc, char** argv)
 			  if (ticks - prevTicks > ticksInterval)
 			  {
 				  coordinatorBii->process();
-				  //gameLogic->process(input,level);
 				  coordinatorBii->render();
-				  //gameLogic->render();
 				  prevTicks = ticks;
 			  }
 		  }
