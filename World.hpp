@@ -4,7 +4,8 @@
 #include <dimitrikourk/small3d/Renderer.hpp>
 #include <dimitrikourk/small3d/Text.hpp>
 #include <dimitrikourk/small3d/Sound.hpp>
-#include "bug.hpp"
+#include "Bug.hpp"
+#include "Goat.hpp"
 
 class World
 {
@@ -12,6 +13,7 @@ private:
 
 	//shared_ptr<SceneObject> goat;
     Bug bug;
+    Goat goat;
 	//shared_ptr<SceneObject> bug;
     //shared_ptr<SceneObject> tree;
 
@@ -61,6 +63,7 @@ void World::loadScene(shared_ptr<small3d::Renderer> &rend)
 void World::init()
 {
     bug.init();
+    goat.init();
 
     startTicks = SDL_GetTicks();
 }
@@ -68,6 +71,7 @@ void World::init()
 void World::move()
 {
     bug.move();
+    goat.move();
 }
 
 void World::render(shared_ptr<small3d::Renderer> &rend)
@@ -95,6 +99,7 @@ void World::render(shared_ptr<small3d::Renderer> &rend)
     rend->renderImage(&groundVerts[0], "ground", true, glm::vec3(0.0f, 0.0f, 0.0f));
 
     bug.render(rend);
+    goat.render(rend);
 
     //CAMERA POSITION
     shared_ptr<glm::vec3> cameraPos = shared_ptr<glm::vec3>(new glm::vec3(0, 1, 2));
@@ -103,11 +108,26 @@ void World::render(shared_ptr<small3d::Renderer> &rend)
 
 void World::keyboard(KeyInput k)
 {
-    //if(k.enter)
-        //bug.init();
+    if(k.up)
+    {
+        goat.run();
+    }
+    if(k.down)
+    {
+
+    }
+    if(k.right)
+    {
+
+    }
+    if(k.left)
+    {
+        goat.rotation_PosY();
+    }
 }
 
 void World::dontMove()
 {
     bug.dontMove();
+    goat.dontMove();
 }
