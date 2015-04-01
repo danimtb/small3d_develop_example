@@ -26,37 +26,6 @@ using namespace small3d;
 const GLuint frameRate = 60;
 KeyInput input;
 
-KeyInput OnKeyboardDown(bool &d)
-{
-	SDL_Event event;
-	
-	if (SDL_PollEvent(&event))
-	{
-		const Uint8 *keyState = SDL_GetKeyboardState(NULL);
-		input.up = keyState[SDL_SCANCODE_UP] == 1;
-		input.down = keyState[SDL_SCANCODE_DOWN] == 1;
-		input.left = keyState[SDL_SCANCODE_LEFT] == 1;
-		input.right = keyState[SDL_SCANCODE_RIGHT] == 1;
-		input.enter = keyState[SDL_SCANCODE_RETURN] == 1;
-		input.one = keyState[SDL_SCANCODE_1] == 1;
-		input.two = keyState[SDL_SCANCODE_2] == 1;
-		input.three = keyState[SDL_SCANCODE_3] == 1;
-
-		switch (event.type)
-		{
-			case SDL_QUIT:
-				d = true;
-				break;
-		
-			case SDL_KEYDOWN:
-				if (event.key.keysym.sym == SDLK_ESCAPE)
-					d = true;
-				break;
-		}
-	}
-	return input;
-}
-
 int main(int argc, char** argv)
 {
 	  // Set up a console, if using MinGW
@@ -75,16 +44,18 @@ int main(int argc, char** argv)
 		  shared_ptr<Coordinator> coordinatorBii(new Coordinator());
 		  
 		  // program main loop
-		  bool done = false;
+		  bool quit = false;
 		  
 		  // ticks for setting the frame rate
 		  GLuint ticks = SDL_GetTicks();
 		  GLuint prevTicks = ticks;
 		  GLuint ticksInterval = 1000 / frameRate;
 		  
-		  while (!done)
+		  while (!quit)
 		  {
-			  coordinatorBii->keyboard(OnKeyboardDown(done));
+		  	quit=input.OnKeyboardDown();
+
+		  	coordinatorBii->keyboard(input);
 			  
 			  ticks = SDL_GetTicks();
 	  

@@ -43,6 +43,10 @@ public:
 	void set_FlightHeight(float fh);
 	float get_FlightHeight();
 	void render(shared_ptr<small3d::Renderer> &r);
+	void startAnimating();
+	void set_Offset();
+	void init();
+	void dontMove();
 
 	Bug();
 	~Bug();
@@ -52,7 +56,7 @@ public:
 Bug::Bug()
 {
 	BugObject = shared_ptr<small3d::SceneObject>(new small3d::SceneObject("bug", "Dani_MTB/small3d_develop_example/resources/models/Bug/bugAnim",9));
-	BugObject->setColour(0.8f, 0.7f, 0.04f, 1.0f);
+	BugObject->setColour(1.0f, 0.0f, 0.0f, 1.0f);
 	BugObject->setFrameDelay(2);
 
 	RotationSpeed = 0.12f;
@@ -75,6 +79,7 @@ shared_ptr<small3d::SceneObject> Bug::Object()
 void Bug::render(shared_ptr<small3d::Renderer> &r)
 {
 	r->renderSceneObject(BugObject);
+	//r->swapBuffers();
 }
 
 void Bug::move()
@@ -188,7 +193,13 @@ void Bug::move()
 			bugOffset->x = -(bugOffset->z);
 
 		BugObject->animate();
+		BugObject->startAnimating();
 
+}
+
+void Bug::dontMove()
+{
+	BugObject->stopAnimating();
 }
 
 void Bug::set_RotationSpeed(float rs)
@@ -251,4 +262,23 @@ void Bug::set_FlightHeight(float fh)
 float Bug::get_FlightHeight()
 {
 	return FlightHeight;
+}
+
+void Bug::startAnimating()
+{
+	BugObject->startAnimating();
+}
+
+void Bug::set_Offset()
+{
+	 BugObject->setOffset(0.5f, GROUND_Y + FlightHeight, -18.0f);
+}
+
+void Bug::init()
+{
+	BugObject->setOffset(0.5f, GROUND_Y + FlightHeight, -18.0f);
+
+    bugState = FLYING_STRAIGHT;
+    bugPreviousState = FLYING_STRAIGHT;
+    bugFramesInCurrentState = 1;
 }

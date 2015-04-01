@@ -22,8 +22,6 @@ private:
     unsigned int startTicks;
     int seconds;
 
-    void initGame();
-
 	float lightModifier;
 
 public:
@@ -32,7 +30,9 @@ public:
 	World();
     ~World();
     void move();
-    void render(shared_ptr<small3d::Renderer> &rend); 
+    void init();
+    void render(shared_ptr<small3d::Renderer> &rend);
+    void dontMove();
 };
 
 using namespace small3d;
@@ -58,9 +58,11 @@ void World::loadScene(shared_ptr<small3d::Renderer> &rend)
     rend->generateTexture("sky", skyTexture->getData(), skyTexture->getWidth(), skyTexture->getHeight());
 }
 
-void World::initGame()
+void World::init()
 {
+    bug.init();
 
+    startTicks = SDL_GetTicks();
 }
 
 void World::move()
@@ -101,5 +103,11 @@ void World::render(shared_ptr<small3d::Renderer> &rend)
 
 void World::keyboard(KeyInput k)
 {
+    //if(k.enter)
+        //bug.init();
+}
 
+void World::dontMove()
+{
+    bug.dontMove();
 }

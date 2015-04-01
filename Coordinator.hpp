@@ -22,7 +22,7 @@ public:
     World world;
 
 private:
-	enum GameState {START_SCREEN, PLAYING};
+	enum GameState {START_SCREEN, PLAYING, PAUSE};
 	GameState gameState;
 	
 	unsigned int startTicks;
@@ -65,11 +65,26 @@ void Coordinator::keyboard(KeyInput k)
 	if(gameState==START_SCREEN)
 	{
 		if(k.enter)
+		{
 			gameState=PLAYING;
+			world.init();
+		}
 	}
-	else
+	if(gameState==PLAYING)
 	{
-		world.keyboard(k);
+		if(k.p)
+		{
+			gameState=PAUSE;
+		}
+		else
+		{
+			world.keyboard(k);
+		}
+	}
+	if(gameState==PAUSE)
+	{
+		if(k.enter)
+			gameState=PLAYING;
 	}
 
 }
@@ -84,6 +99,10 @@ void Coordinator::process()
     	
     	case PLAYING:
       		world.move();
+      		break;
+
+      	case PAUSE:
+      		//world.dontMove();
       		break;
 
     	default:
@@ -113,7 +132,13 @@ void Coordinator::render()
 			crusoeText48->renderText("Goat not bitten for " + intToStr(seconds) + " seconds", textColour, -0.95f, -0.6f, 0.0f, -0.8f);
 		}
 	}
-	else
+	
+	if(gameState==PLAYING)
+	{
+		world.render(renderer);
+	}
+
+	if(gameState==PAUSE)
 	{
 		world.render(renderer);
 	}
