@@ -15,8 +15,9 @@ class Bug
 private:
 	shared_ptr<small3d::SceneObject> BugObject;
 	float RotationSpeed;
-	float DiveTilt;
 	float Speed;
+
+	float DiveTilt;
 	float DiveDuration;
 	float DiveDistance;
 	float FlightHeight;
@@ -26,27 +27,27 @@ private:
     BugState bugState, bugPreviousState;
     int bugFramesInCurrentState;
 
-
 public:
 	shared_ptr<small3d::SceneObject> Object();
 	void move();
+	void init();
+	void dontMove();
 	void set_RotationSpeed(float rs);
 	float get_RotationSpeed();
-	void set_DiveTilt(float dt);
-	float get_DiveTilt();
 	void set_Speed(float s);
 	float get_Speed();
+	void render(shared_ptr<small3d::Renderer> &r);
+	void set_Offset();
+	void get_Offset();
+	
+	void set_DiveTilt(float dt);
+	float get_DiveTilt();
 	void set_DiveDuration(float dd);
 	float get_DiveDuration();
 	void set_DiveDistance(float dd);
 	float get_DiveDistance();
 	void set_FlightHeight(float fh);
 	float get_FlightHeight();
-	void render(shared_ptr<small3d::Renderer> &r);
-	void startAnimating();
-	void set_Offset();
-	void init();
-	void dontMove();
 
 	Bug();
 	~Bug();
@@ -79,7 +80,6 @@ shared_ptr<small3d::SceneObject> Bug::Object()
 void Bug::render(shared_ptr<small3d::Renderer> &r)
 {
 	r->renderSceneObject(BugObject);
-	//r->swapBuffers();
 }
 
 void Bug::move()
@@ -262,11 +262,6 @@ void Bug::set_FlightHeight(float fh)
 float Bug::get_FlightHeight()
 {
 	return FlightHeight;
-}
-
-void Bug::startAnimating()
-{
-	BugObject->startAnimating();
 }
 
 void Bug::set_Offset()

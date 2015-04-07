@@ -62,8 +62,8 @@ int main(int argc, char** argv)
 			  if (ticks - prevTicks > ticksInterval)
 			  {
 				  coordinatorBii->process();
-				  coordinatorBii->render();
 				  prevTicks = ticks;
+				  coordinatorBii->render();
 			  }
 		  }
 	  }

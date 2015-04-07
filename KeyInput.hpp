@@ -66,9 +66,11 @@ bool KeyInput::OnKeyboardDown()
         break;
     
       case SDL_KEYDOWN:
+      {
         if (event.key.keysym.sym == SDLK_ESCAPE)
           skip = true;
         break;
+      }
     }
   }
   return skip;

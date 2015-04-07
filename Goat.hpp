@@ -14,20 +14,22 @@ private:
 	shared_ptr<small3d::SceneObject> GoatObject;
 	float RotationSpeed;
 	float Speed;
-
+	
 public:
-	void move();
 	shared_ptr<small3d::SceneObject> Object();
-	//void set_RotationSpeed(float rs);
-	//float get_RotationSpeed();
+	void move();
+	void init();
+	void dontMove();
+	void set_RotationSpeed(float rs);
+	float get_RotationSpeed();
 	void set_Speed(float s);
 	float get_Speed();
 	void render(shared_ptr<small3d::Renderer> &r);
-	void startAnimating();
 	void set_Offset();
-	void init();
-	void dontMove();
+	void get_Offset();
+	
 	void rotation_PosY();
+	void rotation_NegY();
 	void run();
 
 	Goat();
@@ -41,8 +43,8 @@ Goat::Goat()
 {
 	GoatObject = shared_ptr<SceneObject>(new SceneObject("goat", "Dani_MTB/small3d_develop_example/resources/models/Goat/goatAnim",19, "Dani_MTB/small3d_develop_example/resources/models/Goat/Goat.png","Dani_MTB/small3d_develop_example/resources/models/GoatBB/GoatBB.obj"));
 	
-	RotationSpeed = 0.1f;
-	Speed = 0.05f;
+	RotationSpeed = 0.000004f;
+	Speed = 0.000002f;
 }
 
 Goat::~Goat()
@@ -63,10 +65,24 @@ void Goat::rotation_PosY()
 	shared_ptr<glm::vec3> goatRotation = GoatObject->getRotation();
 	goatRotation->y -= RotationSpeed;
 
-	  if (goatRotation->y < - FULL_ROTATION)
-		  goatRotation->y = 0.0f;
+	if (goatRotation->y < - FULL_ROTATION)
+		goatRotation->y = 0.0f;
 
 	GoatObject->setRotation(0.0f, goatRotation->y, 0.0f);
+	GoatObject->animate();
+	GoatObject->startAnimating();
+}
+
+void Goat::rotation_NegY()
+{
+	shared_ptr<glm::vec3> goatRotation = GoatObject->getRotation();
+	goatRotation->y += RotationSpeed;
+
+	if (goatRotation->y > FULL_ROTATION)
+		goatRotation->y = 0.0f;
+
+	GoatObject->setRotation(0.0f, goatRotation->y, 0.0f);
+	GoatObject->animate();
 	GoatObject->startAnimating();
 }
 
@@ -76,7 +92,9 @@ void Goat::run()
 	shared_ptr<glm::vec3> goatOffset = GoatObject->getOffset();
 	goatOffset->x -= cos(goatRotation->y) * Speed;
 	goatOffset->z -= sin(goatRotation->y) * Speed;
+	GoatObject->animate();
 	GoatObject->startAnimating();
+
 }
 
 void Goat::move()
@@ -85,57 +103,6 @@ void Goat::move()
 	shared_ptr<glm::vec3> goatOffset = GoatObject->getOffset();
 
 	GoatObject->stopAnimating();
-/*
-	if(keyInput.left)
-	{
-		goatRotation->y -= GOAT_ROTATION_SPEED;
-
-
-	  if (goatRotation->y < - FULL_ROTATION)
-		  goatRotation->y = 0.0f;
-	  		
-	  goat->startAnimating();
-
-	}
-	else if (keyInput.right)
-	{
-		goatRotation->y += GOAT_ROTATION_SPEED;
-			
-		if (goatRotation->y > FULL_ROTATION)
-			goatRotation->y = 0.0f;
-			
-		goat->startAnimating();
-	}
-
-	if(keyInput.up)
-	{
-		goatOffset->x -= cos(goatRotation->y) * GOAT_SPEED;
-		goatOffset->z -= sin(goatRotation->y) * GOAT_SPEED;
-
-		goat->startAnimating();
-	}
-	else if (keyInput.down)
-	{
-		goatOffset->x += cos(goatRotation->y) * GOAT_SPEED;
-		goatOffset->z += sin(goatRotation->y) * GOAT_SPEED;
-
-		goat->startAnimating();
-	}
-	*/
-
-	if(goatOffset->z < MIN_Z +1.0f)
-		goatOffset->z = MIN_Z +1.0f;
-		
-	if(goatOffset->z > MAX_Z -1.0f) 
-		goatOffset->z = MAX_Z -1.0f;
-
-	if(goatOffset->x < goatOffset-> z)
-		goatOffset->x = goatOffset-> z;
-		
-	if(goatOffset->x > -(goatOffset->z)) 
-		goatOffset->x = -(goatOffset->z);
-
-	GoatObject->animate();
 }
 
 void Goat::dontMove()
@@ -153,11 +120,6 @@ float Goat::get_Speed()
 	return Speed;
 }
 
-void Goat::startAnimating()
-{
-	GoatObject->startAnimating();
-}
-
 void Goat::set_Offset()
 {
 }
@@ -165,4 +127,14 @@ void Goat::set_Offset()
 void Goat::init()
 {
 	GoatObject->setOffset(-1.2f, GROUND_Y, -4.0f);
+}
+
+void Goat::set_RotationSpeed(float rs)
+{
+	RotationSpeed=rs;
+}
+
+float Goat::get_RotationSpeed()
+{
+	return RotationSpeed;
 }

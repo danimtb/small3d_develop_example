@@ -48,6 +48,9 @@ Coordinator::Coordinator(void)
 	unique_ptr<Image> startScreenTexture( new Image("Dani_MTB/small3d_develop_example/resources/images/startScreen.png") );
 	renderer->generateTexture("startScreen", startScreenTexture->getData(), startScreenTexture->getWidth(), startScreenTexture->getHeight());
 
+	unique_ptr<Image> pauseScreenTexture( new Image("Dani_MTB/small3d_develop_example/resources/images/sky.png") );
+	renderer->generateTexture("pauseScreen", pauseScreenTexture->getData(), pauseScreenTexture->getWidth(), pauseScreenTexture->getHeight());
+
 	world.loadScene(renderer);
 
 	startTicks = 0;
@@ -94,7 +97,6 @@ void Coordinator::process()
 	switch(gameState)
 	{
 		case START_SCREEN:
-			//processStartScreen(keyInput);
       		break;
     	
     	case PLAYING:
@@ -140,7 +142,18 @@ void Coordinator::render()
 
 	if(gameState==PAUSE)
 	{
-		world.render(renderer);
+		//world.render(renderer);
+
+		float pauseScreenVerts[16] =
+		{
+			  -1.0f, -1.0f, 1.0f, 1.0f,
+			  1.0f, -1.0f, 1.0f, 1.0f,
+			  1.0f, 1.0f, 1.0f, 1.0f,
+			  -1.0f, 1.0f, 1.0f, 1.0f
+		  };
+		renderer->renderImage(&pauseScreenVerts[0], "pauseScreen");
+		SDL_Color colour = {255, 100, 0, 255};
+		crusoeText48->renderText("Press <ENTER> to resume the game", colour, -0.95f, -0.6f, 0.0f, -0.8f);
 	}
 	
 	//Don`t remove this line. This line must be always at the end.
