@@ -1,13 +1,51 @@
-#include "..\..\include\comun\Interaccion.h"
+#pragma once
+
+#include "Plane.h"
+#include "Goat.hpp"
+
+class Interaction
+{
+public:
+	Interaction();
+	virtual ~Interaction();
+	//static void Rebote(Hombre &h, Caja c);
+	//static bool Rebote(Esfera &e, Pared p);
+	//static void Rebote(Esfera &e, Caja c);
+	//static bool Rebote(Esfera &e, Esfera &f);
+	//static bool Colision(Esfera e, Hombre h);
+	//static bool Colision(Disparo d, Pared p);
+	//static bool Colision(Disparo d, Caja c);
+
+	static void field(Goat &g, Plane p);
+};
+
+
+//#include "Interaccion.h"
 #include <math.h>
 
-Interaccion::Interaccion(void)
+Interaction::Interaction()
 {
 }
 
-Interaccion::~Interaccion(void)
+Interaction::~Interaction()
 {
 }
+
+void Interaction::field(Goat &g, Plane p)
+{
+	shared_ptr<small3d::SceneObject> goat = g.Object();
+	shared_ptr<glm::vec3> goatOffset = goat->getOffset();
+
+	if(goatOffset->x > p.maxX())
+		goatOffset->x=p.maxX()-0.5f;
+
+
+	g.set_Offset(goatOffset);
+}
+
+
+
+/*
 
 void Interaccion::Rebote(Hombre &h, Caja c)
 {
@@ -150,3 +188,5 @@ bool Interaccion::Colision(Disparo d, Caja c)
 		return true;
 	return false;
 }
+
+*/

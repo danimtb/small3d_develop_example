@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vector>
 #include "dimitrikourk/small3d/SceneObject.hpp"
 #include "dimitrikourk/small3d/MathFunctions.hpp"
@@ -6,7 +8,7 @@
 #define MAX_Z -1.0f
 #define MIN_Z -24.0f
 #define FULL_ROTATION 6.28f // More or less 360 degrees in radians
-#define GROUND_Y -1.0f
+#define GROUND_Y 0.0f
 
 class Goat
 {
@@ -25,8 +27,8 @@ public:
 	void set_Speed(float s);
 	float get_Speed();
 	void render(shared_ptr<small3d::Renderer> &r);
-	void set_Offset();
-	void get_Offset();
+	void set_Offset(shared_ptr<glm::vec3> off);
+	shared_ptr<glm::vec3> get_Offset();
 	
 	void rotation_PosY();
 	void rotation_NegY();
@@ -120,13 +122,9 @@ float Goat::get_Speed()
 	return Speed;
 }
 
-void Goat::set_Offset()
-{
-}
-
 void Goat::init()
 {
-	GoatObject->setOffset(-1.2f, GROUND_Y, -4.0f);
+	GoatObject->setOffset(-1.2f, 0.0f, -4.0f);
 }
 
 void Goat::set_RotationSpeed(float rs)
@@ -137,4 +135,14 @@ void Goat::set_RotationSpeed(float rs)
 float Goat::get_RotationSpeed()
 {
 	return RotationSpeed;
+}
+
+void Goat::set_Offset(shared_ptr<glm::vec3> off)
+{
+	GoatObject->setOffset(off->x, off->y, off->z);
+}
+
+shared_ptr<glm::vec3> Goat::get_Offset()
+{
+	return GoatObject->getOffset();
 }

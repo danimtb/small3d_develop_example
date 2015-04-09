@@ -6,7 +6,7 @@
 #define MAX_Z -1.0f
 #define MIN_Z -24.0f
 #define FULL_ROTATION 6.28f // More or less 360 degrees in radians
-#define GROUND_Y -1.0f
+#define GROUND_Y 0.0f
 
 
 
