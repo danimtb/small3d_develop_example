@@ -28,6 +28,10 @@ public:
 	void setPos(float maxX, float minX, float maxY, float minY, float maxZ, float minZ);
 	float maxX();
 	float minX();
+	float maxY();
+	float minY();
+	float maxZ();
+	float minZ();
 	
 	//float Distancia(Vector2D punto, Vector2D *direccion);
 
@@ -124,4 +128,24 @@ float Plane::maxX()
 float Plane::minX()
 {
 	return min_x;
+}
+
+float Plane::maxY()
+{
+	return max_y;
+}
+
+float Plane::minY()
+{
+	return min_y;
+}
+
+float Plane::maxZ()
+{
+	return max_z;
+}
+
+float Plane::minZ()
+{
+	return min_z;
 }

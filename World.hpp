@@ -18,6 +18,10 @@ private:
     Goat goat;
     Plane ground;
     Plane sky;
+    Plane virtual1;
+    Plane virtual2;
+    Plane virtual3;
+    Plane virtual4; 
 	//shared_ptr<SceneObject> bug;
     //shared_ptr<SceneObject> tree;
 
@@ -45,8 +49,11 @@ using namespace small3d;
 
 World::World()
 {
-    ground.setPos(20.0f, -20.0f, 0.0f, 0.0f, -1.0f, -24.0f);
+    ground.setPos(10.0f, -10.0f, 0.0f, 0.0f, -1.0f, -16.0f);
     sky.setPos(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f);
+
+    virtual1.setPos(5.0f, -5.0f, 1.0f, 0.0f, -8.0f, -8.0f);
+    virtual2.setPos(5.0f, 5.0f, 1.0f, 0.0f, -8.0f, -1.0f);
 }
 
 World::~World()
@@ -57,6 +64,8 @@ void World::loadScene(shared_ptr<small3d::Renderer> &rend)
     ground.load(rend, "Dani_MTB/small3d_develop_example/resources/images/grass.png", "ground");
 
     sky.load(rend, "Dani_MTB/small3d_develop_example/resources/images/sky.png", "sky");
+    virtual1.load(rend, "Dani_MTB/small3d_develop_example/resources/images/sky.png", "virtual1");
+    virtual2.load(rend, "Dani_MTB/small3d_develop_example/resources/images/sky.png", "virtual2");
 }
 
 void World::init()
@@ -73,6 +82,7 @@ void World::move()
     goat.move();
 
     Interaction::field(goat, ground);
+    Interaction::field(goat, virtual1);
 }
 
 void World::render(shared_ptr<small3d::Renderer> &rend)
@@ -80,6 +90,8 @@ void World::render(shared_ptr<small3d::Renderer> &rend)
     // Draw the background
     ground.render(rend, true);
     sky.render(rend, false);
+    virtual1.render(rend, true);
+    virtual2.render(rend, true);
 
     bug.render(rend);
     goat.render(rend);

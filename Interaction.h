@@ -33,12 +33,27 @@ Interaction::~Interaction()
 
 void Interaction::field(Goat &g, Plane p)
 {
-	shared_ptr<small3d::SceneObject> goat = g.Object();
-	shared_ptr<glm::vec3> goatOffset = goat->getOffset();
+	shared_ptr<glm::vec3> goatOffset = g.get_Offset();
 
-	if(goatOffset->x > p.maxX())
-		goatOffset->x=p.maxX()-0.5f;
+	if(p.maxZ() == p.minZ())
+	{
+		if(goatOffset->z > p.maxZ() && goatOffset->z - p.maxZ() < 0.2f && goatOffset->x > p.minX()-0.2f && goatOffset->x < p.maxX()+0.2f)
+			goatOffset->z=p.maxZ()+0.2f;
+		if(goatOffset->z < p.maxZ() && p.maxZ() - goatOffset->z < 0.2f && goatOffset->x > p.minX()-0.2f && goatOffset->x < p.maxX()+0.2f)
+			goatOffset->z=p.maxZ()-0.2f;
+	}
+	else
+	{
+		if(goatOffset->z > p.maxZ())
+			goatOffset->z=p.maxZ();
+		if(goatOffset->z < p.minZ())
+			goatOffset->z=p.minZ();
 
+		if(goatOffset->x > p.maxX())
+			goatOffset->x=p.maxX();
+		if(goatOffset->x < p.minX())
+			goatOffset->x=p.minX();
+	}
 
 	g.set_Offset(goatOffset);
 }
