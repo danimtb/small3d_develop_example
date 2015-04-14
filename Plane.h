@@ -82,19 +82,37 @@ void Plane::setPos(float maxX, float minX, float maxY, float minY, float maxZ, f
 
 void Plane::render(shared_ptr<small3d::Renderer> &r, bool perspective)
 {
+	float verts[16];
 
-    float verts[16] =
-      {
-        min_x, min_y, max_z, 1.0f,
-        max_x, min_y, max_z, 1.0f,
-        max_x, max_y, min_z, 1.0f,
-        min_x, max_y, min_z, 1.0f
-      };
+	if(min_x==max_x)
+	{
+		if(r->cameraPosition.x < min_x)
+		{
+			verts[0]=min_x; verts[1]=min_y; verts[2]=min_z, verts[3]=1.0f;
+			verts[4]=min_x;  verts[5]=min_y;  verts[6]=max_z;  verts[7]=1.0f;
+			verts[8]=min_x;  verts[9]=max_y;  verts[10]=max_z;  verts[11]=1.0f;
+			verts[12]=min_x;  verts[13]=max_y;  verts[14]=min_z; verts[15]=1.0f;
+		}
+		else
+		{
+			verts[0]=min_x;  verts[1]=min_y;  verts[2]=max_z;  verts[3]=1.0f;
+			verts[4]=min_x;  verts[5]=min_y;  verts[6]=min_z;  verts[7]=1.0f;
+			verts[8]=min_x;  verts[9]=max_y;  verts[10]=min_z; verts[11]=1.0f;
+			verts[12]=min_x; verts[13]=max_y; verts[14]=max_z, verts[15]=1.0f;
+		}
+    }
+    else
+	{
+      	verts[0]=min_x;  verts[1]=min_y;  verts[2]=max_z;  verts[3]=1.0f;
+		verts[4]=max_x;  verts[5]=min_y;  verts[6]=max_z;  verts[7]=1.0f;
+		verts[8]=max_x;  verts[9]=max_y;  verts[10]=min_z; verts[11]=1.0f;
+		verts[12]=min_x; verts[13]=max_y; verts[14]=min_z, verts[15]=1.0f;
+	}
 
     if(perspective)
     	r->renderImage(&verts[0], name, true);
     else
-    	r->renderImage(&verts[0], name, false);
+    	r->renderImage(&verts[0], name, false);												
 
 }
 

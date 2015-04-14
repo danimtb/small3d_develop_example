@@ -48,7 +48,7 @@ Coordinator::Coordinator(void)
 	unique_ptr<Image> startScreenTexture( new Image("Dani_MTB/small3d_develop_example/resources/images/startScreen.png") );
 	renderer->generateTexture("startScreen", startScreenTexture->getData(), startScreenTexture->getWidth(), startScreenTexture->getHeight());
 
-	unique_ptr<Image> pauseScreenTexture( new Image("Dani_MTB/small3d_develop_example/resources/images/sky.png") );
+	unique_ptr<Image> pauseScreenTexture( new Image("Dani_MTB/small3d_develop_example/resources/images/pauseScreen.png") );
 	renderer->generateTexture("pauseScreen", pauseScreenTexture->getData(), pauseScreenTexture->getWidth(), pauseScreenTexture->getHeight());
 
 	world.loadScene(renderer);

@@ -2,6 +2,7 @@
 #include "dimitrikourk/small3d/SceneObject.hpp"
 #include "dimitrikourk/small3d/MathFunctions.hpp"
 #include <cmath>
+#include "Movil.h"
 
 #define MAX_Z -1.0f
 #define MIN_Z -24.0f
@@ -10,13 +11,9 @@
 
 
 
-class Bug
+class Bug: public Movil
 {
 private:
-	shared_ptr<small3d::SceneObject> BugObject;
-	float RotationSpeed;
-	float Speed;
-
 	float DiveTilt;
 	float DiveDuration;
 	float DiveDistance;
@@ -28,18 +25,14 @@ private:
     int bugFramesInCurrentState;
 
 public:
-	shared_ptr<small3d::SceneObject> Object();
 	void move();
 	void init();
-	void dontMove();
-	void set_RotationSpeed(float rs);
-	float get_RotationSpeed();
-	void set_Speed(float s);
-	float get_Speed();
-	void render(shared_ptr<small3d::Renderer> &r);
-	void set_Offset();
-	void get_Offset();
 	
+	void turn();
+	void flightStraight();
+	void diveUp();
+	void diveDown();
+
 	void set_DiveTilt(float dt);
 	float get_DiveTilt();
 	void set_DiveDuration(float dd);
@@ -56,9 +49,9 @@ public:
 
 Bug::Bug()
 {
-	BugObject = shared_ptr<small3d::SceneObject>(new small3d::SceneObject("bug", "Dani_MTB/small3d_develop_example/resources/models/Bug/bugAnim",9));
-	BugObject->setColour(1.0f, 0.0f, 0.0f, 1.0f);
-	BugObject->setFrameDelay(2);
+	Object = shared_ptr<small3d::SceneObject>(new small3d::SceneObject("bug", "Dani_MTB/small3d_develop_example/resources/models/Bug/bugAnim",9));
+	Object->setColour(1.0f, 0.0f, 0.0f, 1.0f);
+	Object->setFrameDelay(2);
 
 	RotationSpeed = 0.12f;
 	DiveTilt = 0.8f;
@@ -72,144 +65,49 @@ Bug::Bug()
 Bug::~Bug()
 {}
 
-shared_ptr<small3d::SceneObject> Bug::Object()
-{
-	return BugObject;
-}
-
-void Bug::render(shared_ptr<small3d::Renderer> &r)
-{
-	r->renderSceneObject(BugObject);
-}
-
 void Bug::move()
 {
-	shared_ptr<glm::vec3> bugRotation = BugObject->getRotation();
-	shared_ptr<glm::vec3> bugOffset = BugObject->getOffset();
+	shared_ptr<glm::vec3> bugRotation = Object->getRotation();
+	shared_ptr<glm::vec3> bugOffset = Object->getOffset();
 
-	float xDistance = BugObject->getOffset()->x;
-	float zDistance = BugObject->getOffset()->z;
+	float xDistance = Object->getOffset()->x;
+	float zDistance = Object->getOffset()->z;
 	float distance = ROUND_2_DECIMAL(sqrt(xDistance * xDistance + zDistance*zDistance));
 
 	float objRelX = ROUND_2_DECIMAL(xDistance / distance);
 	float objRelZ = ROUND_2_DECIMAL(zDistance / distance);
 
-	float bugDirectionX = cos(BugObject->getRotation()->y);
-	float bugDirectionZ = sin(BugObject->getRotation()->y);
+	float bugDirectionX = cos(Object->getRotation()->y);
+	float bugDirectionZ = sin(Object->getRotation()->y);
 
 	float dotPosDir = objRelX * bugDirectionX + objRelZ * bugDirectionZ; // dot product
 
-	// Bug state: decide
-	if(bugState == bugPreviousState)
-	{
-		++bugFramesInCurrentState;
-	}
-	else
-	{
-		bugFramesInCurrentState = 1;
-	}
+	// Bug state: represent
+    bugRotation->z = 0;
 
-	bugPreviousState = bugState;
+    if (bugState == TURNING)
+    {
+    	bugRotation->y -= RotationSpeed;
+    }
+    else if (bugState == DIVING_DOWN)
+    {
+    	bugRotation->z = -DiveTilt;
+    	bugOffset->y -= VerticalSpeed;
+    }
+    else if (bugState == DIVING_UP)
+    {
+    	bugRotation->z = DiveTilt;
+    	bugOffset->y += VerticalSpeed;
+    }
 
-	if(bugState == DIVING_DOWN)
-	{
-		if (true)//(BugObject->getOffset()->x, BugObject->getOffset()->y, BugObject->getOffset()->z)
-		{
-			//COLISION#####################################################################
-			//sound->play("bah");
-			//seconds = (SDL_GetTicks() - startTicks) / 1000;		
-		}
-			
-		if(bugFramesInCurrentState > DiveDuration / 2)
-		{
-			bugState = DIVING_UP;
-		}
-	}
-	else if (bugState == DIVING_UP)
-	{
-		if (true)//(BugObject->getOffset()->x, BugObject->getOffset()->y, BugObject->getOffset()->z)
-		{
-			//gameState = START_SCREEN;
-		}
-			
-		if (bugFramesInCurrentState > DiveDuration / 2)
-		{
-			bugState = FLYING_STRAIGHT;
-			bugOffset->y = GROUND_Y + FlightHeight; // Correction of possible rounding errors
-		}
-	}
-	else
-	{
-		if (distance > DiveDistance)
-		{
-			if (dotPosDir < 0.98f)
-			{
-				bugState = TURNING;
-			}
-			else
-			{
-				bugState = FLYING_STRAIGHT;
-			}
-		}
-		else
-		{
-			bugState = DIVING_DOWN;
-		}
-	}
+	if(bugRotation->y < -FULL_ROTATION)
+		bugRotation->y = 0.0f;
 
-		// Bug state: represent
-		bugRotation->z = 0;
-		if (bugState == TURNING)
-		{
-			bugRotation->y -= RotationSpeed;
-		}
-		else if (bugState == DIVING_DOWN)
-		{
-			bugRotation->z = -DiveTilt;
-			bugOffset->y -= VerticalSpeed;
-		}
-		else if (bugState == DIVING_UP)
-		{
-			bugRotation->z = DiveTilt;
-			bugOffset->y += VerticalSpeed;
-		}
+	bugOffset->x -= cos(bugRotation->y) * Speed;
+	bugOffset->z -= sin(bugRotation->y) * Speed;
 
-		if(bugRotation->y < -FULL_ROTATION)
-			bugRotation->y = 0.0f;
-
-		bugOffset->x -= cos(bugRotation->y) * Speed;
-		bugOffset->z -= sin(bugRotation->y) * Speed;
-
-		if(bugOffset->z < MIN_Z)
-			bugOffset->z = MIN_Z;
-		
-		if (bugOffset->z > MAX_Z) 
-			bugOffset->z = MAX_Z;
-
-		if(bugOffset->x < bugOffset-> z)
-			bugOffset->x = bugOffset-> z;
-		
-		if (bugOffset->x > -(bugOffset->z)) 
-			bugOffset->x = -(bugOffset->z);
-
-		BugObject->animate();
-		BugObject->startAnimating();
-
-}
-
-void Bug::dontMove()
-{
-	BugObject->stopAnimating();
-}
-
-void Bug::set_RotationSpeed(float rs)
-{
-	RotationSpeed=rs;
-}
-
-float Bug::get_RotationSpeed()
-{
-	return RotationSpeed;
+	Object->animate();
+	Object->startAnimating();
 }
 
 void Bug::set_DiveTilt(float dt)
@@ -220,16 +118,6 @@ void Bug::set_DiveTilt(float dt)
 float Bug::get_DiveTilt()
 {
 	return DiveTilt;
-}
-
-void Bug::set_Speed(float s)
-{
-	Speed = s;
-}
-
-float Bug::get_Speed()
-{
-	return Speed;
 }
 
 void Bug::set_DiveDuration(float dd)
@@ -264,16 +152,31 @@ float Bug::get_FlightHeight()
 	return FlightHeight;
 }
 
-void Bug::set_Offset()
-{
-	 BugObject->setOffset(0.5f, GROUND_Y + FlightHeight, -18.0f);
-}
-
 void Bug::init()
 {
-	BugObject->setOffset(0.5f, GROUND_Y + FlightHeight, -18.0f);
+	Object->setOffset(10.5f, GROUND_Y + FlightHeight, -4.0f);
 
     bugState = FLYING_STRAIGHT;
     bugPreviousState = FLYING_STRAIGHT;
     bugFramesInCurrentState = 1;
+}
+
+void Bug::turn()
+{
+
+}
+
+void Bug::flightStraight()
+{
+
+}
+
+void Bug::diveUp()
+{
+	bugState = DIVING_UP;
+}
+
+void Bug::diveDown()
+{
+
 }

@@ -2,6 +2,7 @@
 
 #include "Plane.h"
 #include "Goat.hpp"
+#include "Movil.h"
 
 class Interaction
 {
@@ -16,7 +17,8 @@ public:
 	//static bool Colision(Disparo d, Pared p);
 	//static bool Colision(Disparo d, Caja c);
 
-	static void field(Goat &g, Plane p);
+	static void field(Movil &m, Plane p);
+	static bool chase(Bug &b, Goat g);
 };
 
 
@@ -31,31 +33,118 @@ Interaction::~Interaction()
 {
 }
 
-void Interaction::field(Goat &g, Plane p)
+bool Interaction::chase(Bug &b, Goat g)
 {
+	//b.set_Offset(g.get_Offset());
+
+	shared_ptr<glm::vec3> bugRotation = b.get_Rotation();
+	shared_ptr<glm::vec3> bugOffset = b.get_Offset();
+
+	shared_ptr<glm::vec3> goatRotation = g.get_Rotation();
 	shared_ptr<glm::vec3> goatOffset = g.get_Offset();
+
+	float xDistance = bugOffset->x;
+	float zDistance = bugOffset->z;
+	float distance = ROUND_2_DECIMAL(sqrt(xDistance * xDistance + zDistance*zDistance));
+
+	bugOffset->x -= cos(goatRotation->y) * b.get_Speed();
+	bugOffset->z -= sin(goatRotation->y) * b.get_Speed();
+	//b.set_Offset(bugOffset);
+	b.set_Rotation(goatRotation);
+
+	/*
+	if (bugState == bugPreviousState)
+    {
+    	++bugFramesInCurrentState;
+    }
+    else
+    {
+    	bugFramesInCurrentState = 1;
+    }
+
+    bugPreviousState = bugState;
+	
+	if(goat->collidesWithPoint(bug->getOffset()->x, bug->getOffset()->y, bug->getOffset()->z))
+    {
+    		sound->play("bah");
+    		seconds = (SDL_GetTicks() - startTicks) / 1000;
+    		gameState = START_SCREEN
+    }
+
+    	if (bugFramesInCurrentState > b.get_DiveDuration() / 2)
+    	{
+        	b.diveUp();
+    	}
+	}
+    else if (bugState == DIVING_UP)
+    {
+    	if (goat->collidesWithPoint(bug->getOffset()->x, bug->getOffset()->y, bug->getOffset()->z))
+      	{
+        	gameState = START_SCREEN;
+      	}
+
+      	if (bugFramesInCurrentState > BUG_DIVE_DURATION / 2)
+      	{
+      		bugState = FLYING_STRAIGHT;
+      		bugOffset->y = GROUND_Y + BUG_FLIGHT_HEIGHT; // Correction of possible rounding errors
+      	}
+    }
+    else
+    {
+    	if (distance > BUG_START_DIVE_DISTANCE)
+    	{
+    		if (dotPosDir < 0.98f)
+    		{
+    			bugState = TURNING;
+    		}
+    		else
+    		{
+    			bugState = FLYING_STRAIGHT;
+    		}
+    	}
+    	else
+    	{
+    		bugState = DIVING_DOWN;
+    	}
+    }
+
+    bugOffset->x -= cos(bugRotation->y) * Speed;
+    bugOffset->z -= sin(bugRotation->y) * Speed;
+    */
+}
+
+void Interaction::field(Movil &m, Plane p)
+{
+	shared_ptr<glm::vec3> mOffset = m.get_Offset();
 
 	if(p.maxZ() == p.minZ())
 	{
-		if(goatOffset->z > p.maxZ() && goatOffset->z - p.maxZ() < 0.2f && goatOffset->x > p.minX()-0.2f && goatOffset->x < p.maxX()+0.2f)
-			goatOffset->z=p.maxZ()+0.2f;
-		if(goatOffset->z < p.maxZ() && p.maxZ() - goatOffset->z < 0.2f && goatOffset->x > p.minX()-0.2f && goatOffset->x < p.maxX()+0.2f)
-			goatOffset->z=p.maxZ()-0.2f;
+		if(mOffset->z > p.maxZ() && mOffset->z - p.maxZ() < 0.2f && mOffset->x > p.minX()-0.1f && mOffset->x < p.maxX()+0.1f && mOffset->y <= p.maxY())
+			mOffset->z=p.maxZ()+0.2f;
+		if(mOffset->z < p.maxZ() && p.maxZ() - mOffset->z < 0.2f && mOffset->x > p.minX()-0.1f && mOffset->x < p.maxX()+0.1f && mOffset->y <= p.maxY())
+			mOffset->z=p.maxZ()-0.2f;
+	}
+	else if(p.maxX() == p.minX())
+	{
+		if(mOffset->x > p.maxX() && mOffset->x - p.maxX() < 0.2f && mOffset->z > p.minZ()-0.1f && mOffset->z < p.maxZ()+0.1f && mOffset->y <= p.maxY())
+			mOffset->x=p.maxX()+0.2f;
+		if(mOffset->x < p.maxX() && p.maxX() - mOffset->x < 0.2f && mOffset->z > p.minZ()-0.1f && mOffset->z < p.maxZ()+0.1f && mOffset->y <= p.maxY())
+			mOffset->x=p.maxX()-0.2f;
 	}
 	else
 	{
-		if(goatOffset->z > p.maxZ())
-			goatOffset->z=p.maxZ();
-		if(goatOffset->z < p.minZ())
-			goatOffset->z=p.minZ();
+		if(mOffset->z > p.maxZ())
+			mOffset->z=p.maxZ();
+		if(mOffset->z < p.minZ())
+			mOffset->z=p.minZ();
 
-		if(goatOffset->x > p.maxX())
-			goatOffset->x=p.maxX();
-		if(goatOffset->x < p.minX())
-			goatOffset->x=p.minX();
+		if(mOffset->x > p.maxX())
+			mOffset->x=p.maxX();
+		if(mOffset->x < p.minX())
+			mOffset->x=p.minX();
 	}
 
-	g.set_Offset(goatOffset);
+	m.set_Offset(mOffset);
 }
 
 

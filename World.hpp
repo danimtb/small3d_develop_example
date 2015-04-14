@@ -49,11 +49,12 @@ using namespace small3d;
 
 World::World()
 {
-    ground.setPos(10.0f, -10.0f, 0.0f, 0.0f, -1.0f, -16.0f);
+    ground.setPos(20.0f, 0.0f, 0.0f, 0.0f, -1.0f, -16.0f);
     sky.setPos(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f);
 
-    virtual1.setPos(5.0f, -5.0f, 1.0f, 0.0f, -8.0f, -8.0f);
-    virtual2.setPos(5.0f, 5.0f, 1.0f, 0.0f, -8.0f, -1.0f);
+    virtual1.setPos(15.0f, 5.0f, 2.0f, 0.0f, -6.0f, -6.0f);
+    virtual2.setPos(15.0f, 15.0f, 2.0f, 0.0f, -2.0f, -6.0f);
+    virtual3.setPos(5.0f, 5.0f, 2.0f, 0.0f, -1.0f, -6.0f);
 }
 
 World::~World()
@@ -64,9 +65,11 @@ void World::loadScene(shared_ptr<small3d::Renderer> &rend)
     ground.load(rend, "Dani_MTB/small3d_develop_example/resources/images/grass.png", "ground");
 
     sky.load(rend, "Dani_MTB/small3d_develop_example/resources/images/sky.png", "sky");
-    virtual1.load(rend, "Dani_MTB/small3d_develop_example/resources/images/sky.png", "virtual1");
-    virtual2.load(rend, "Dani_MTB/small3d_develop_example/resources/images/sky.png", "virtual2");
+    virtual1.load(rend, "Dani_MTB/small3d_develop_example/resources/images/fence.png", "virtual1");
+    virtual2.load(rend, "Dani_MTB/small3d_develop_example/resources/images/fence.png", "virtual2");
+    virtual3.load(rend, "Dani_MTB/small3d_develop_example/resources/images/fence.png", "virtual3");
 }
+
 
 void World::init()
 {
@@ -82,8 +85,17 @@ void World::move()
     goat.move();
 
     Interaction::field(goat, ground);
+    Interaction::field(bug, ground);
+
     Interaction::field(goat, virtual1);
-}
+    Interaction::field(bug, virtual1);
+    Interaction::field(goat, virtual2);
+    Interaction::field(bug, virtual2);
+    Interaction::field(goat, virtual3);
+    Interaction::field(bug, virtual3);
+
+    Interaction::chase(bug, goat);
+}       
 
 void World::render(shared_ptr<small3d::Renderer> &rend)
 {
@@ -92,12 +104,13 @@ void World::render(shared_ptr<small3d::Renderer> &rend)
     sky.render(rend, false);
     virtual1.render(rend, true);
     virtual2.render(rend, true);
+    virtual3.render(rend, true);
 
     bug.render(rend);
     goat.render(rend);
 
     //CAMERA POSITION
-    shared_ptr<glm::vec3> cameraPos = shared_ptr<glm::vec3>(new glm::vec3(0, 2, 5)); //0, 2, 2
+    shared_ptr<glm::vec3> cameraPos = shared_ptr<glm::vec3>(new glm::vec3(10, 1.5, 5)); //10, 1.5, 1
     rend->cameraPosition = *cameraPos;
 }
 
