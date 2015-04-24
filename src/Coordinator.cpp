@@ -1,37 +1,4 @@
-#include "KeyInput.hpp"
-#include <dimitrikourk/small3d/Logger.hpp>
-#include <dimitrikourk/small3d/SceneObject.hpp>
-#include <dimitrikourk/small3d/Renderer.hpp>
-#include <dimitrikourk/small3d/Text.hpp>
-#include <dimitrikourk/small3d/Sound.hpp>
-#include <dimitrikourk/small3d/MathFunctions.hpp>
-#include "World.hpp"
-
-
-class Coordinator
-{
-public:
-    Coordinator(void);
-    virtual ~Coordinator(void);
-    void keyboard(KeyInput k);
-    void process();
-    void render();
-
-    float lightModifier; 
-
-    World world;
-
-private:
-	enum GameState {START_SCREEN, PLAYING, PAUSE};
-	GameState gameState;
-	
-	unsigned int startTicks;
-	int seconds;
-	
-	shared_ptr<small3d::Renderer> renderer;
-	shared_ptr<small3d::Text> crusoeText48;
-	shared_ptr<small3d::Sound> sound;
-};
+#include "Coordinator.hpp"
 
 using namespace small3d;
 
@@ -69,6 +36,8 @@ void Coordinator::keyboard(KeyInput k)
 	{
 		if(k.enter)
 		{
+			startTicks = SDL_GetTicks();
+			seconds=0;
 			gameState=PLAYING;
 			world.init();
 		}
@@ -111,6 +80,13 @@ void Coordinator::process()
       		throw Exception("Urecognised game state");
       		break;
     }
+
+    if(world.end)
+    {
+    	seconds=(SDL_GetTicks()-startTicks)/1000;
+    	gameState=START_SCREEN;
+    	world.end=false;
+    }
 }
 
 void Coordinator::render()
@@ -132,6 +108,11 @@ void Coordinator::render()
 		{
 			SDL_Color textColour = {255, 100, 0, 255};
 			crusoeText48->renderText("Goat not bitten for " + intToStr(seconds) + " seconds", textColour, -0.95f, -0.6f, 0.0f, -0.8f);
+		}
+		else
+		{
+			SDL_Color textColour = {255, 100, 0, 255};
+			crusoeText48->renderText("Press <p> to PAUSE the game", textColour, -0.95f, -0.6f, 0.0f, -0.8f);
 		}
 	}
 	

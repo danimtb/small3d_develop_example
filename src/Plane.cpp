@@ -1,46 +1,9 @@
-#pragma once
-
-#include <dimitrikourk/small3d/SceneObject.hpp>
-#include <dimitrikourk/small3d/Renderer.hpp>
-
-class Plane
-{
-private:
-	unsigned char rojo;
-	unsigned char verde;
-	unsigned char azul;
-	char *name;
-	char *route;
-
-	float max_z;
-	float min_z;
-	float max_y;
-	float min_y;
-	float max_x;
-	float min_x;
-
-public:
-	Plane(void);
-	virtual ~Plane(void);
-	void load(shared_ptr<small3d::Renderer> &r, char *_route, char *_name);
-	void render(shared_ptr<small3d::Renderer> &r, bool perspective);
-	void setColor(int, int, int);
-	void setPos(float maxX, float minX, float maxY, float minY, float maxZ, float minZ);
-	float maxX();
-	float minX();
-	float maxY();
-	float minY();
-	float maxZ();
-	float minZ();
-	
-	//float Distancia(Vector2D punto, Vector2D *direccion);
-
-	friend class Interaction;
-};
 
 
-//#include "Plane.h"
+#include "Plane.hpp"
 #include <string.h>
+
+using namespace small3d;
 
 Plane::Plane(void)
 {
@@ -115,28 +78,6 @@ void Plane::render(shared_ptr<small3d::Renderer> &r, bool perspective)
     	r->renderImage(&verts[0], name, false);												
 
 }
-
-/*float Plane::Distancia(Vector2D punto, Vector2D *direccion)
-{
-	Vector2D u=(punto-limite1);
-	Vector2D v=(limite2-limite1).unitario();
-	float longitud=(limite1-limite2).modulo();
-	Vector2D dir;
-	float valor=u*v;
-	float distancia=0;
-
-	if(valor<0)
-		dir=u;
-	else if(valor>longitud)
-		dir=(punto-limite2);
-	else
-		dir=u-v*valor;
-	distancia=dir.modulo();
-	if(direccion!=0)
-		*direccion=dir.unitario();
-	return distancia;
-}
-*/
 
 float Plane::maxX()
 {

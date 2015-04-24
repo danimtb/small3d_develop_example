@@ -1,40 +1,14 @@
-#pragma once
-
-#include <vector>
-#include "dimitrikourk/small3d/SceneObject.hpp"
-#include "dimitrikourk/small3d/MathFunctions.hpp"
-#include <cmath>
-#include "Movil.h"
-
-#define MAX_Z -1.0f
-#define MIN_Z -24.0f
-#define FULL_ROTATION 6.28f // More or less 360 degrees in radians
-#define GROUND_Y 0.0f
-
-class Goat: public Movil
-{
-	
-public:
-	void move();
-	void init();
-	
-	void rotation_PosY();
-	void rotation_NegY();
-	void run();
-
-	Goat();
-	~Goat();
-
-};
+#include "Goat.hpp"
 
 using namespace small3d;
 
 Goat::Goat()
 {
 	Object = shared_ptr<SceneObject>(new SceneObject("goat", "Dani_MTB/small3d_develop_example/resources/models/Goat/goatAnim",19, "Dani_MTB/small3d_develop_example/resources/models/Goat/Goat.png","Dani_MTB/small3d_develop_example/resources/models/GoatBB/GoatBB.obj"));
+	Object->setColour(1.0f, 0.0f, 0.0f, 1.0f);
 	
 	RotationSpeed = 0.000004f;
-	Speed = 0.000002f;
+	Speed = 0.000001f;
 }
 
 Goat::~Goat()

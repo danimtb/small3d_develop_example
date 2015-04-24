@@ -1,51 +1,5 @@
-#include <vector>
-#include "dimitrikourk/small3d/SceneObject.hpp"
-#include "dimitrikourk/small3d/MathFunctions.hpp"
-#include <cmath>
-#include "Movil.h"
+#include "Bug.hpp"
 
-#define MAX_Z -1.0f
-#define MIN_Z -24.0f
-#define FULL_ROTATION 6.28f // More or less 360 degrees in radians
-#define GROUND_Y 0.0f
-
-
-
-class Bug: public Movil
-{
-private:
-	float DiveTilt;
-	float DiveDuration;
-	float DiveDistance;
-	float FlightHeight;
-	float VerticalSpeed;
-
-	enum BugState {FLYING_STRAIGHT, TURNING, DIVING_DOWN, DIVING_UP};
-    BugState bugState, bugPreviousState;
-    int bugFramesInCurrentState;
-
-public:
-	void move();
-	void init();
-	
-	void turn();
-	void flightStraight();
-	void diveUp();
-	void diveDown();
-
-	void set_DiveTilt(float dt);
-	float get_DiveTilt();
-	void set_DiveDuration(float dd);
-	float get_DiveDuration();
-	void set_DiveDistance(float dd);
-	float get_DiveDistance();
-	void set_FlightHeight(float fh);
-	float get_FlightHeight();
-
-	Bug();
-	~Bug();
-
-};
 
 Bug::Bug()
 {
@@ -60,6 +14,8 @@ Bug::Bug()
 	DiveDistance = 0.6f;
 	FlightHeight = 1.4f;
 	VerticalSpeed = ROUND_2_DECIMAL(FlightHeight / DiveDuration);
+	bugState=FLYING_STRAIGHT;
+	bugFramesInCurrentState = 1;
 }
 
 Bug::~Bug()
@@ -68,19 +24,18 @@ Bug::~Bug()
 void Bug::move()
 {
 	shared_ptr<glm::vec3> bugRotation = Object->getRotation();
-	shared_ptr<glm::vec3> bugOffset = Object->getOffset();
+    shared_ptr<glm::vec3> bugOffset = Object->getOffset();
 
-	float xDistance = Object->getOffset()->x;
-	float zDistance = Object->getOffset()->z;
-	float distance = ROUND_2_DECIMAL(sqrt(xDistance * xDistance + zDistance*zDistance));
+	if (bugState == bugPreviousState)
+    {
+    	++bugFramesInCurrentState;
+    }
+    else
+    {
+    	bugFramesInCurrentState = 1;
+    }
 
-	float objRelX = ROUND_2_DECIMAL(xDistance / distance);
-	float objRelZ = ROUND_2_DECIMAL(zDistance / distance);
-
-	float bugDirectionX = cos(Object->getRotation()->y);
-	float bugDirectionZ = sin(Object->getRotation()->y);
-
-	float dotPosDir = objRelX * bugDirectionX + objRelZ * bugDirectionZ; // dot product
+    bugPreviousState = bugState;
 
 	// Bug state: represent
     bugRotation->z = 0;
@@ -88,6 +43,7 @@ void Bug::move()
     if (bugState == TURNING)
     {
     	bugRotation->y -= RotationSpeed;
+
     }
     else if (bugState == DIVING_DOWN)
     {
@@ -154,21 +110,30 @@ float Bug::get_FlightHeight()
 
 void Bug::init()
 {
-	Object->setOffset(10.5f, GROUND_Y + FlightHeight, -4.0f);
+	Object->setOffset(13.5f, GROUND_Y + FlightHeight, -6.0f);
 
     bugState = FLYING_STRAIGHT;
     bugPreviousState = FLYING_STRAIGHT;
     bugFramesInCurrentState = 1;
 }
 
-void Bug::turn()
+void Bug::turnLeft()
 {
+	//bugState = TURNING;
+	shared_ptr<glm::vec3> bugRotation = Object->getRotation();
+	bugRotation->y += RotationSpeed;
+}
 
+void Bug::turnRight()
+{
+	//bugState = TURNING;
+	shared_ptr<glm::vec3> bugRotation = Object->getRotation();
+	bugRotation->y -= RotationSpeed;
 }
 
 void Bug::flightStraight()
 {
-
+	bugState = FLYING_STRAIGHT;
 }
 
 void Bug::diveUp()
@@ -178,5 +143,20 @@ void Bug::diveUp()
 
 void Bug::diveDown()
 {
+	bugState = DIVING_DOWN;	
+}
 
+void Bug::turn()
+{
+	bugState = TURNING;	
+}
+
+BugState Bug::get_State()
+{
+	return bugState;
+}
+
+int Bug::get_FramesInCurrentState()
+{
+	return bugFramesInCurrentState;
 }

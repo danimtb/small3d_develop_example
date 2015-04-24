@@ -1,28 +1,4 @@
-#pragma once
-#ifndef KEYINPUT_H_
-#define KEYINPUT_H_
-
-#include "miguel/sdl2/include/SDL.h"
-
-   // Class holding the state of keys on the keyboard that are related to the game.
-
-class KeyInput
-{
-public:
-  bool up;
-  bool down;
-  bool left;
-  bool right;
-  bool enter;
-  bool p;
-  bool one;
-  bool two;
-  bool three;
-
-  KeyInput();
-  ~KeyInput();
-  bool OnKeyboardDown();
-};
+#include "KeyInput.hpp"
 
 KeyInput::KeyInput()
 {
@@ -75,5 +51,3 @@ bool KeyInput::OnKeyboardDown()
   }
   return skip;
 }
-
-#endif

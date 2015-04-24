@@ -1,60 +1,16 @@
-#include "KeyInput.hpp"
-#include <dimitrikourk/small3d/Logger.hpp>
-#include <dimitrikourk/small3d/SceneObject.hpp>
-#include <dimitrikourk/small3d/Renderer.hpp>
-#include <dimitrikourk/small3d/Text.hpp>
-#include <dimitrikourk/small3d/Sound.hpp>
-#include "Bug.hpp"
-#include "Goat.hpp"
-#include "Plane.h"
-#include "Interaction.h"
-
-class World
-{
-private:
-
-	//shared_ptr<SceneObject> goat;
-    Bug bug;
-    Goat goat;
-    Plane ground;
-    Plane sky;
-    Plane virtual1;
-    Plane virtual2;
-    Plane virtual3;
-    Plane virtual4; 
-	//shared_ptr<SceneObject> bug;
-    //shared_ptr<SceneObject> tree;
-
-    shared_ptr<small3d::Renderer> *rendererWorld;
-	shared_ptr<small3d::Text> crusoeText48;
-	shared_ptr<small3d::Sound> sound;
-
-    unsigned int startTicks;
-    int seconds;
-
-	float lightModifier;
-
-public:
-    void keyboard(KeyInput k);
-    void loadScene(shared_ptr<small3d::Renderer> &rend);
-	World();
-    ~World();
-    void move();
-    void init();
-    void render(shared_ptr<small3d::Renderer> &rend);
-    void dontMove();
-};
+#include "World.hpp"
 
 using namespace small3d;
 
 World::World()
 {
+    end=false;
     ground.setPos(20.0f, 0.0f, 0.0f, 0.0f, -1.0f, -16.0f);
     sky.setPos(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f);
 
-    virtual1.setPos(15.0f, 5.0f, 2.0f, 0.0f, -6.0f, -6.0f);
-    virtual2.setPos(15.0f, 15.0f, 2.0f, 0.0f, -2.0f, -6.0f);
-    virtual3.setPos(5.0f, 5.0f, 2.0f, 0.0f, -1.0f, -6.0f);
+    virtual1.setPos(15.0f, 5.0f, 1.0f, 0.0f, -6.0f, -6.0f);
+    virtual2.setPos(15.0f, 15.0f, 1.0f, 0.0f, -2.0f, -6.0f);
+    virtual3.setPos(5.0f, 5.0f, 1.0f, 0.0f, -1.0f, -6.0f);
 }
 
 World::~World()
@@ -73,6 +29,7 @@ void World::loadScene(shared_ptr<small3d::Renderer> &rend)
 
 void World::init()
 {
+    end=false;
     bug.init();
     goat.init();
 
@@ -94,7 +51,7 @@ void World::move()
     Interaction::field(goat, virtual3);
     Interaction::field(bug, virtual3);
 
-    Interaction::chase(bug, goat);
+    end=Interaction::chase(bug, goat);
 }       
 
 void World::render(shared_ptr<small3d::Renderer> &rend)
@@ -110,7 +67,7 @@ void World::render(shared_ptr<small3d::Renderer> &rend)
     goat.render(rend);
 
     //CAMERA POSITION
-    shared_ptr<glm::vec3> cameraPos = shared_ptr<glm::vec3>(new glm::vec3(10, 1.5, 5)); //10, 1.5, 1
+    shared_ptr<glm::vec3> cameraPos = shared_ptr<glm::vec3>(new glm::vec3(10, 1.8, 2.8)); //10, 1.5, 1
     rend->cameraPosition = *cameraPos;
 }
 

@@ -1,29 +1,4 @@
-#pragma once
-
-class Movil
-{
-protected:
-	shared_ptr<small3d::SceneObject> Object;
-	float RotationSpeed;
-	float Speed;
-	~Movil();
-public:
-	Movil();
-	void dontMove();
-	void set_RotationSpeed(float rs);
-	float get_RotationSpeed();
-	void set_Speed(float s);
-	float get_Speed();
-	void set_Offset(shared_ptr<glm::vec3> off);
-	shared_ptr<glm::vec3> get_Offset();
-	void set_Rotation(shared_ptr<glm::vec3> rot);
-	shared_ptr<glm::vec3> get_Rotation();
-
-	virtual void move();
-	virtual void init();
-	virtual void render(shared_ptr<small3d::Renderer> &r);
-
-};
+#include "Movil.hpp"
 
 Movil::Movil()
 {
@@ -93,4 +68,9 @@ void Movil::set_Rotation(shared_ptr<glm::vec3> rot)
 shared_ptr<glm::vec3> Movil::get_Rotation()
 {
 	return 	Object->getRotation();
+}
+
+bool Movil::collidesWithPoint(float _x, float _y, float _z)
+{
+	return Object->collidesWithPoint(_x, _y, _z);
 }
