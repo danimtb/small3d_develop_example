@@ -48,7 +48,7 @@ after_success:
 env:
   global:
   - USER_EMAIL=danimanzaneque@gmail.com
-  - USER_NAME="Dani_MTB"
+  - USER_NAME="danimtb"
   - COMMIT_IGNORE_BUILD="Promoted version.***travis***"
   - BLOCK_NAME=small3d_develop_example
   - USER=Dani_MTB
