@@ -31,22 +31,19 @@ script:
 - shopt -s dotglob && mv $TRAVIS_BUILD_DIR/* ./
 - if [ "$CXX" == "clang++" ]; then export CXX="clang++" && bii build; fi
 - if [ "$CXX" == "g++" ];     then export CXX="g++"     && bii build; fi
-##################### CHANGE WITH YOUR CUSTOM CHECKS OR TEST EXECUTION ##################
 - ls ./bin/Dani_MTB_small3d_develop_example_main
-#########################################################################################
 after_success:
 - bii user $USER -p $BII_PASSWORD
 - if [[ -n $TRAVIS_TAG ]]; then bii publish -r --tag STABLE --versiontag $TRAVIS_TAG
   || echo "Ignored publish output..."; fi
 - if [[ -z $TRAVIS_TAG ]]; then bii publish -r || echo "Ignored publish output...";
   fi
-# If there are changes, commit them
-- git config credential.helper "store --file=.git/credentials" 
+- git config credential.helper "store --file=.git/credentials"
 - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
 - git add -A .
-- git commit -m "$COMMIT_IGNORE_BUILD" 
+- git commit -m "$COMMIT_IGNORE_BUILD"
 - git remote -v
-- git remote set-url origin https://github.com/$TRAVIS_REPO_SLUG.git 
+- git remote set-url origin https://github.com/$TRAVIS_REPO_SLUG.git
 - git push
 env:
   global:
@@ -55,7 +52,5 @@ env:
   - COMMIT_IGNORE_BUILD="Promoted version.***travis***"
   - BLOCK_NAME=small3d_develop_example
   - USER=Dani_MTB
-  # BII_PASSWORD: Biicode USER's password. > travis encrypt BII_PASSWORD=XXXXXX --add
-  - secure: K4oI72CcIcUBo3cb7DfhPoWSOEZxNzx8JOLpkZ/xOy3vFvXatvDP1KEpDvpirIGkueBuzhzMXXWE1wsefsbimh1PWSE5iyyF52aoWGuhKsjXt0/q80G2uwA/lcJIRJhJCH0m7QAsG8j054x06A+CJUHOsYCNKK3XUzE5ice+Dsc=
-  # GH_TOKEN: Github token > travis encrypt GH_TOKEN=XXXXXX --add
-  - secure: gNKs9E4Fh2agwqaGFTl1uzLvT+PrhykIi57eo9IkAlBuae/jOjAqxGua7NM7Rg+FxjLYh+wecPpO9DXsyNmeBjKpRN3AUmL6qTUgnVndxaRGV4avYpvnVymy6btqoyyBO3lm+wXgaKPtyp9NxjYhXbiQXnMC77yZOLC2k8BCRgk=
+  - secure: ERdf2Q6OhR5ifS8llFR+g2dLaRA9ISKih+74Oyn0gYxhLkh3Xg96hC8MAEBtUihvzvNJqW4kAS8jEyBbsfh7eoa8S1FN2bY43WU5Tm8eLszXD+6LdHPQ5F7Tz1UZCsUQY+TiFFWEP9iZEqcHWLmwvpGm+Ave2FTImd/amukcPSk=
+  - secure: hjWoXLVF8832tY3DIPN10PGPDgfpEYgKR6DrhOeb94PpXexJJRQWO0U5XmWw+vyUwiaZyHf/HkVuoa/znJeX6fB70DoEJNyFgYqdxYH0T0fWiGQrNvrDx5IP6gS5Xd3JLfEkZXXm7Wpmd4AY0OY4TTwFq8bSnAsvqFHRtNPWr10=
