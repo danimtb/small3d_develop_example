@@ -16,7 +16,7 @@ before_build:
   - cmd: bii init proyect
     # copy files and folders
   - cmd: cd proyect
-  - cmd: bii open %block_user%/%block_name%
+  - cmd: xcopy "%APPVEYOR_BUILD_FOLDER%" blocks\%block_user%\%block_name%\ /e
   - cmd: bii configure -G "Visual Studio 12"
 build_script:
   - cmd: bii build
