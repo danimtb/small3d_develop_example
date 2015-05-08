@@ -13,9 +13,10 @@ install:
   - cmd: del bii-win.exe
   - cmd: del cmake.zip
 before_build:
-  - cmd: bii init -L
+  - cmd: bii init proyect
     # copy files and folders
-  - cmd: xcopy "%APPVEYOR_BUILD_FOLDER%" blocks\%block_user%\%block_name%\ /e
+  - cmd: cd proyect
+  - cmd: bii open %block_user%/%block_name%
   - cmd: bii configure -G "Visual Studio 12"
 build_script:
   - cmd: bii build
@@ -29,17 +30,18 @@ deploy_script:
   - if defined APPVEYOR_REPO_TAG_NAME bii publish -r --tag=%tag% --versiontag=%VERSION%
   - if not defined APPVEYOR_REPO_TAG_NAME bii publish -r
 on_success:
-  - ps: |
-        git checkout "$env:APPVEYOR_REPO_BRANCH"
-        git config --global core.autocrlf true
-        git config --global credential.helper store
-        Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
-        git remote add neworigin "$env:github_repo"
-        git config --global user.email "$env:github_email"
-        git config --global user.name "$env:github_user"
-        git add .
-        git commit -m "Updated biicode parents [skip ci]"
-        git push neworigin "$env:APPVEYOR_REPO_BRANCH"
+  - git config --global core.autocrlf true
+  - git config --global credential.helper store
+  - git config --global user.email "$env:github_email"
+  - git config --global user.name "$env:github_user"
+  - git config --global push.default simple
+  - git checkout "$env:APPVEYOR_REPO_BRANCH"
+  - Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
+  - git remote add neworigin "$env:github_repo"
+  - git add .
+  - git commit -m "Updated biicode parents [skip ci]"
+  - git push neworigin "$env:APPVEYOR_REPO_BRANCH"
+
 environment:
   block_user:
     "Dani_MTB"
