@@ -48,7 +48,7 @@ environment:
   secured_passwd:
     secure: Xs9AudM/J5BVLFyYfvrTOw==
   access_token:
-    secure: baa398e00eff5b811a40d64976877dbfcc32f44f
+    secure: 20d873e37e2e4e78dad513993255b1f3674f3812
   tag:
     "STABLE"
   github_user:
